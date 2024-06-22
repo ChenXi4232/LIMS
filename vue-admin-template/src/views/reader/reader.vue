@@ -35,29 +35,28 @@
       </el-form-item>
     </el-form>
 
-    <el-form ref="listType" v-if="dialogVisibleAddReaderTypeS" :model="listType" label-width="100px">
-      <el-form-item label="读者证 ID" prop="reader_card_id">
-        {{ listType.reader_card_id }}
+    <el-form v-if="dialogVisibleTypeS" ref="listType" :model="listType" label-width="100px">
+      <el-form-item label="学号" prop="student_id">
+        {{ listType.student_id }}
       </el-form-item>
       <el-form-item label="专业" prop="major">
         {{ listType.major }}
       </el-form-item>
-      <el-form-item label="学号" prop="student_id">
-        {{ listType.student_id }}
-      </el-form-item>
     </el-form>
 
-    <el-form ref="listType" v-if="dialogVisibleAddReaderTypeF" :model="listType" label-width="100px">
-      <el-form-item label="读者证 ID" prop="reader_card_id">
-        {{ listType.reader_card_id }}
+    <el-button type="primary" @click="updateReaderButton">修改读者信息</el-button>
+
+    <el-form v-if="dialogVisibleTypeF" ref="listType" :model="listType" label-width="100px">
+      <el-form-item label="教工号" prop="faculty_id">
+        {{ listType.faculty_id }}
       </el-form-item>
       <el-form-item label="部门" prop="department">
         {{ listType.department }}
       </el-form-item>
-      <el-form-item label="教工号" prop="faculty_id">
-        {{ listType.faculty_id }}
-      </el-form-item>
     </el-form>
+
+    <el-button v-if="dialogVisibleTypeS" type="primary" @click="updateReaderButtonS">修改读者类型信息</el-button>
+    <el-button v-if="dialogVisibleTypeF" type="primary" @click="updateReaderButtonF">修改读者类型信息</el-button>
 
     <el-dialog
       title="修改读者"
@@ -68,9 +67,6 @@
       <el-form ref="listAdd" :model="listAdd" label-width="100px">
         <el-form-item label="姓名" prop="name">
           <el-input v-model="listAdd.name" placeholder="请输入姓名" clearable @clear="handleClearAdd" />
-        </el-form-item>
-        <el-form-item label="读者证 ID" prop="reader_card_id">
-          <el-input v-model="listAdd.reader_card_id" placeholder="请输入读者证 ID" clearable @clear="handleClearAdd" />
         </el-form-item>
         <el-form-item label="地址" prop="address">
           <el-input v-model="listAdd.address" placeholder="请输入地址" clearable @clear="handleClearAdd" />
@@ -83,9 +79,6 @@
         </el-form-item>
         <el-form-item label="性别" prop="gender">
           <el-input v-model="listAdd.gender" placeholder="请输入性别" clearable @clear="handleClearAdd" />
-        </el-form-item>
-        <el-form-item label="有效期" prop="expiration_date">
-          <el-input v-model="listAdd.expiration_date" placeholder="请输入有效期" clearable @clear="handleClearAdd" />
         </el-form-item>
         <el-form-item label="读者证照片" prop="reader_card_photo">
           <el-upload
@@ -106,26 +99,20 @@
         <el-form-item label="出生日期" prop="date_of_birth">
           <el-input v-model="listAdd.date_of_birth" placeholder="请输入出生日期" clearable @clear="handleClearAdd" />
         </el-form-item>
-        <el-form-item label="借阅限额" prop="borrowing_limit">
-          <el-input v-model="listAdd.borrowing_limit" placeholder="请输入借阅限额" clearable @clear="handleClearAdd" />
-        </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="addReaderInfo">添加</el-button>
+          <el-button type="primary" @click="updateReader">修改</el-button>
           <el-button @click="dialogVisibleAddReader = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
 
     <el-dialog
-      title="添加学生读者"
+      title="修改学生读者"
       :visible.sync="dialogVisibleAddReaderTypeS"
       width="70%"
       center
     >
       <el-form ref="listAddStudentType" :model="listAddStudentType" label-width="100px">
-        <el-form-item label="读者证 ID" prop="reader_card_id">
-          <el-input v-model="listAddStudentType.reader_card_id" placeholder="请输入读者证 ID" clearable @clear="handleClearAddStudentType" />
-        </el-form-item>
         <el-form-item label="专业" prop="major">
           <el-input v-model="listAddStudentType.major" placeholder="请输入专业" clearable @clear="handleClearAddStudentType" />
         </el-form-item>
@@ -133,22 +120,19 @@
           <el-input v-model="listAddStudentType.student_id" placeholder="请输入学号" clearable @clear="handleClearAddStudentType" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="addStudentType">添加</el-button>
+          <el-button type="primary" @click="updateStudentType">修改</el-button>
           <el-button @click="dialogVisibleAddReaderTypeS = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
 
     <el-dialog
-      title="添加教职工读者"
+      title="修改教职工读者"
       :visible.sync="dialogVisibleAddReaderTypeF"
       width="70%"
       center
     >
       <el-form ref="listAddFacultyType" :model="listAddFacultyType" label-width="100px">
-        <el-form-item label="读者证 ID" prop="reader_card_id">
-          <el-input v-model="listAddFacultyType.reader_card_id" placeholder="请输入读者证 ID" clearable @clear="handleClearAddFacultyType" />
-        </el-form-item>
         <el-form-item label="部门" prop="department">
           <el-input v-model="listAddFacultyType.department" placeholder="请输入部门" clearable @clear="handleClearAddFacultyType" />
         </el-form-item>
@@ -156,7 +140,7 @@
           <el-input v-model="listAddFacultyType.faculty_id" placeholder="请输入教工号" clearable @clear="handleClearAddFacultyType" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="addFacultyType">添加</el-button>
+          <el-button type="primary" @click="updateFacultyType">修改</el-button>
           <el-button @click="dialogVisibleAddReaderTypeF = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -166,15 +150,15 @@
 </template>
 
 <script>
-import { createReader, deleteReader, findReader, getAllReader, addFacultyType, addStudentType, findReaderType } from '@/api/reader_info'
+import { findReader, findReaderType, updateStudentType, updateReader, updateFacultyType } from '@/api/reader'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination'
+// import Pagination from '@/components/Pagination'
 import user from '@/store'
 import { getToken } from '@/utils/auth'
 
 export default {
   name: 'ReaderInfo',
-  components: { Pagination },
+  // components: { Pagination },
   directives: { waves },
   data() {
     return {
@@ -248,20 +232,23 @@ export default {
   },
   // mounted() {
   //   this.fetchData()
-  //   this.handleCollectionDistribution()
+  //   this.lookUpType()
   // },
   created() {
-    this.fetchData()
     this.getUserInfo()
+    this.lookUpType()
+    this.fetchData()
   },
   methods: {
     // 查询读者类型信息
-    lookUpType(readerCardID) {
-      findReaderType({ reader_card_id: readerCardID }).then(response => {
+    lookUpType() {
+      findReaderType({ reader_card_id: this.name }).then(response => {
         this.listType = response.data.info
         if (this.listType.type === 'student') {
+          // console.log('学生')
           this.dialogVisibleTypeS = true
         } else {
+          // console.log('教职工')
           this.dialogVisibleTypeF = true
         }
       }).catch(error => {
@@ -278,45 +265,86 @@ export default {
         this.$message.error('请输入正确的读者类型')
       }
     },
-    // 添加学生类型
-    addStudentType() {
+    // 修改读者信息按钮
+    updateReaderButton() {
+      this.dialogVisibleAddReader = true
+    },
+    // 修改读者类型信息按钮
+    updateReaderButtonS() {
+      this.dialogVisibleAddReaderTypeS = true
+    },
+    // 修改读者类型信息按钮
+    updateReaderButtonF() {
+      this.dialogVisibleAddReaderTypeF = true
+    },
+    // 修改读者信息
+    updateReader() {
+      this.$refs['listAdd'].validate((valid) => {
+        if (valid) {
+          const readerInfoData = {
+            reader_card_id: this.name,
+            name: this.listAdd.name,
+            phone_number: this.listAdd.phone_number,
+            email: this.listAdd.email,
+            gender: this.list.gender,
+            reader_card_photo: this.listAdd.reader_card_photo,
+            date_of_birth: this.listAdd.date_of_birth,
+            address: this.listAdd.address
+          }
+          updateReader(readerInfoData).then(response => {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.lookUpType()
+            this.dialogVisibleAddReader = false
+          }).catch(error => {
+            console.error('修改失败', error)
+            this.dialogVisibleAddReader = false
+          })
+        }
+      })
+    },
+    // 修改学生类型信息
+    updateStudentType() {
       this.$refs['listAddStudentType'].validate((valid) => {
         if (valid) {
           const readerInfoData = {
-            reader_card_id: this.listAddStudentType.reader_card_id,
+            reader_card_id: this.name,
             major: this.listAddStudentType.major,
             student_id: this.listAddStudentType.student_id
           }
-          addStudentType(readerInfoData).then(response => {
+          updateStudentType(readerInfoData).then(response => {
             this.$message({
-              message: '添加成功',
+              message: '修改成功',
               type: 'success'
             })
+            this.lookUpType()
             this.dialogVisibleAddReaderTypeS = false
           }).catch(error => {
-            console.error('添加失败', error)
+            console.error('修改失败', error)
             this.dialogVisibleAddReaderTypeS = false
           })
         }
       })
     },
-    // 添加教师类型
-    addFacultyType() {
+    // 修改教师类型信息
+    updateFacultyType() {
       this.$refs['listAddFacultyType'].validate((valid) => {
         if (valid) {
           const readerInfoData = {
-            reader_card_id: this.listAddFacultyType.reader_card_id,
+            reader_card_id: this.name,
             department: this.listAddFacultyType.department,
             faculty_id: this.listAddFacultyType.faculty_id
           }
-          addFacultyType(readerInfoData).then(response => {
+          updateFacultyType(readerInfoData).then(response => {
             this.$message({
-              message: '添加成功',
+              message: '修改成功',
               type: 'success'
             })
             this.dialogVisibleAddReaderTypeF = false
           }).catch(error => {
-            console.error('添加失败', error)
+            console.error('修改失败', error)
             this.dialogVisibleAddReaderTypeF = false
           })
         }
@@ -326,26 +354,6 @@ export default {
     deleteReaderButton(row) {
       this.dialogVisibleDeleteReaderInfo = true
       this.deleteReaderCardID = row.reader_card_id
-    },
-    // 删除图书信息
-    deleteReaderInfo() {
-      // console.log(this.deleteCallNumber)
-      const deleteBookInfoData = {
-        reader_card_id: this.deleteReaderCardID
-      }
-      deleteReader(deleteBookInfoData).then(response => {
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        })
-        this.dialogVisibleDeleteReaderInfo = false
-        this.handleClearDeleteReader()
-        this.fetchData()
-      }).catch(error => {
-        console.error('删除失败', error)
-        this.dialogVisibleDeleteReaderInfo = false
-        this.handleClearDeleteReader()
-      })
     },
     handleClearDeleteReader() {
       this.deleteReaderCardID = undefined
@@ -375,60 +383,24 @@ export default {
       }
       return isJPG && isLt2M
     },
-    addReaderInfo() {
-      this.$refs['listAdd'].validate((valid) => {
-        if (valid) {
-          const readerInfoData = {
-            reader_card_id: this.listAdd.reader_card_id,
-            name: this.listAdd.name,
-            phone_number: this.listAdd.phone_number,
-            email: this.listAdd.email,
-            gender: this.listAdd.gender,
-            expiration_date: this.listAdd.expiration_date,
-            borrowing_limit: this.listAdd.borrowing_limit,
-            reader_card_photo: this.listAdd.reader_card_photo,
-            date_of_birth: this.listAdd.date_of_birth,
-            address: this.listAdd.address
-          }
-          createReader(readerInfoData).then(response => {
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            })
-            this.dialogVisibleAddReader = false
-            this.fetchData()
-          }).catch(error => {
-            console.error('添加失败', error)
-            this.dialogVisibleAddReader = false
-          })
-        }
-      })
-    },
-    handleSearch() {
-      if (this.listQuery.name === undefined) {
-        this.listQuery.name = ''
-      }
-      if (this.listQuery.reader_card_id === undefined) {
-        this.listQuery.reader_card_id = ''
-      }
-      if (this.listQuery.phone_number === undefined) {
-        this.listQuery.phone_number = ''
-      }
-      if (this.listQuery.gender === undefined) {
-        this.listQuery.gender = ''
-      }
+    fetchData() {
+      this.listQuery.name = ''
+      this.listQuery.reader_card_id = this.name
+      this.listQuery.phone_number = ''
+      this.listQuery.gender = ''
       this.searchLoading = true
       findReader(this.listQuery).then(response => {
-        this.list = response.data.items
+        this.list = response.data.items[0]
+        console.log(this.list)
         this.total = response.data.total
         this.dialogVisible = true
         this.searchLoading = false
         this.$message({
-          message: '读者记录搜索完成',
+          message: '读者记录加载完成',
           type: 'success'
         })
       }).catch(error => {
-        console.error('读者记录搜索失败', error)
+        console.error('读者记录加载失败', error)
         this.searchLoading = false
       })
     },
@@ -462,22 +434,6 @@ export default {
     },
     getUserInfo() {
       this.name = user.getters.name
-    },
-    fetchData() {
-      this.listLoading = true
-      getAllReader().then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-        this.dialogVisible = true
-        this.listLoading = false
-        this.$message({
-          message: '读者记录查询完成',
-          type: 'success'
-        })
-      }).catch(error => {
-        console.error('读者记录查询失败', error)
-        this.listLoading = false
-      })
     },
     showFile(filePath) {
       // 设置要显示的图片路径

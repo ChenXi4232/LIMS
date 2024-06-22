@@ -686,36 +686,28 @@ def update_book_info(request):
 @permission_classes([HasReaderPermission])
 def update_reader(request):
     if request.method == 'POST':
-        serializer = UpdateReaderSerializer(data=request.data)
-        if serializer.is_valid():
-            reader_card_id = serializer.validated_data['reader_card_id']
+            reader_card_id = request.data['reader_card_id']
             try:
                 reader = Reader.objects.get(pk=reader_card_id)
-                if 'name' in serializer.validated_data and serializer.validated_data['name'] != "":
-                    reader.name = serializer.validated_data['name']
-                if 'address' in serializer.validated_data and serializer.validated_data['address'] != "":
-                    reader.address = serializer.validated_data['address']
-                if 'phone_number' in serializer.validated_data and serializer.validated_data['phone_number'] != "":
-                    reader.phone_number = serializer.validated_data['phone_number']
-                if 'email' in serializer.validated_data and serializer.validated_data['email'] != "":
-                    reader.email = serializer.validated_data['email']
-                if 'gender' in serializer.validated_data and serializer.validated_data['gender'] != "":
-                    reader.gender = serializer.validated_data['gender']
-                if 'expiration_date' in serializer.validated_data and serializer.validated_data['expiration_date'] != "":
-                    reader.expiration_date = serializer.validated_data['expiration_date']
-                if 'borrowing_limit' in serializer.validated_data and serializer.validated_data['borrowing_limit'] != "":
-                    reader.borrowing_limit = serializer.validated_data['borrowing_limit']
-                if 'reader_card_photo' in serializer.validated_data and serializer.validated_data['reader_card_photo'] != "":
-                    reader.reader_card_photo = serializer.validated_data['reader_card_photo']
-                if 'date_of_birth' in serializer.validated_data and serializer.validated_data['date_of_birth'] != "":
-                    reader.date_of_birth = serializer.validated_data['date_of_birth']
-                if 'outstanding_amount' in serializer.validated_data and serializer.validated_data['outstanding_amount'] != "":
-                    reader.outstanding_amount = serializer.validated_data['outstanding_amount']
+                if request.data['name'] != "":
+                    reader.name = request.validated_data['name']
+                if request.data['address'] != "":
+                    reader.address = request.validated_data['address']
+                if request.data['phone_number'] != "":
+                    reader.phone_number = request.validated_data['phone_number']
+                if request.data['email'] != "":
+                    reader.email = request.data['email']
+                if request.data['gender'] != "":
+                    reader.gender = request.data['gender']
+                if request.data['reader_card_photo'] != "":
+                    reader.reader_card_photo = request.data['reader_card_photo']
+                if request.data['date_of_birth'] != "":
+                    reader.date_of_birth = request.data['date_of_birth']
                 try:
                     with transaction.atomic():
                         reader.save()
                         re_data = {
-                            "data": serializer.data,
+                            "data": request.data,
                             "code": 20000,
                             "message": "success"
                         }
@@ -724,7 +716,6 @@ def update_reader(request):
                     return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             except Reader.DoesNotExist:
                 return Response({"error": "Reader does not exist."}, status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response({"error": "Only POST method is allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
@@ -829,29 +820,26 @@ def delete_reader(request):
 @permission_classes([HasReaderPermission])
 def update_reader_student(request):
     if request.method == 'POST':
-        serializer = ReaderStudentSerializer(data=request.data)
-        if serializer.is_valid():
-            reader_card_id = serializer.validated_data['reader_card_id']
+        reader_card_id = request.data['reader_card_id']
+        try:
+            reader_student = ReaderStudent.objects.get(pk=reader_card_id)
+            if request.data['major'] != "":
+                reader_student.major = request.data['major']
+            if request.data['student_id'] != "":
+                reader_student.student_id = request.data['student_id']
             try:
-                reader_student = ReaderStudent.objects.get(pk=reader_card_id)
-                if 'major' in serializer.validated_data and serializer.validated_data['major'] != "":
-                    reader_student.major = serializer.validated_data['major']
-                if 'student_id' in serializer.validated_data and serializer.validated_data['student_id'] != "":
-                    reader_student.student_id = serializer.validated_data['student_id']
-                try:
-                    with transaction.atomic():
-                        reader_student.save()
-                        re_data = {
-                            "data": serializer.data,
-                            "code": 20000,
-                            "message": "success"
-                        }
-                        return Response(re_data, status=status.HTTP_200_OK)
-                except Exception as e:
-                    return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            except ReaderStudent.DoesNotExist:
-                return Response({"error": "Reader student does not exist."}, status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                with transaction.atomic():
+                    reader_student.save()
+                    re_data = {
+                        "data": request.data,
+                        "code": 20000,
+                        "message": "success"
+                    }
+                    return Response(re_data, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except ReaderStudent.DoesNotExist:
+            return Response({"error": "Reader student does not exist."}, status=status.HTTP_404_NOT_FOUND)
     return Response({"error": "Only POST method is allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
@@ -877,29 +865,27 @@ def delete_reader_student(request, reader_card_id):
 @permission_classes([HasReaderPermission])
 def update_reader_faculty(request):
     if request.method == 'POST':
-        serializer = ReaderFacultySerializer(data=request.data)
-        if serializer.is_valid():
-            reader_card_id = serializer.validated_data['reader_card_id']
+        print(request.data)
+        reader_card_id = request.data['reader_card_id']
+        try:
+            reader_faculty = ReaderFaculty.objects.get(pk=reader_card_id)
+            if request.data['department'] != "":
+                reader_faculty.department = request.data['department']
+            if request.data['faculty_id'] != "":
+                reader_faculty.faculty_id = request.data['faculty_id']
             try:
-                reader_faculty = ReaderFaculty.objects.get(pk=reader_card_id)
-                if 'department' in serializer.validated_data and serializer.validated_data['department'] != "":
-                    reader_faculty.department = serializer.validated_data['department']
-                if 'faculty_id' in serializer.validated_data and serializer.validated_data['faculty_id'] != "":
-                    reader_faculty.faculty_id = serializer.validated_data['faculty_id']
-                try:
-                    with transaction.atomic():
-                        reader_faculty.save()
-                        re_data = {
-                            "data": serializer.data,
-                            "code": 20000,
-                            "message": "success"
-                        }
-                        return Response(re_data, status=status.HTTP_200_OK)
-                except Exception as e:
-                    return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            except ReaderFaculty.DoesNotExist:
-                return Response({"error": "Reader faculty does not exist."}, status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                with transaction.atomic():
+                    reader_faculty.save()
+                    re_data = {
+                        "data": request.data,
+                        "code": 20000,
+                        "message": "success"
+                    }
+                    return Response(re_data, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except ReaderFaculty.DoesNotExist:
+            return Response({"error": "Reader faculty does not exist."}, status=status.HTTP_404_NOT_FOUND)
     return Response({"error": "Only POST method is allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
@@ -1629,7 +1615,7 @@ def update_late_fee_info_status(request):
 
 # 查找指定读者，利用 reader_card_id、name、phone_number、gender 等信息
 @api_view(['POST'])
-@permission_classes([HasLibrarianPermission])
+@permission_classes([HasReaderPermission])
 def search_reader(request):
     if request.method == 'POST':
         temp_query = {'reader_card_id': request.data['reader_card_id'], 'name': request.data['name'],
@@ -1660,6 +1646,7 @@ def search_reader(request):
             reader_item = Reader.objects.get(pk=reader_card_id)
             reader['gender'] = reader_item.get_gender_display()
         total = len(serializer.data)
+        # print(serializer.data)
         re_data = {
             "data": {
                 "total": total,
@@ -1715,9 +1702,11 @@ def get_all_reader(request):
 def search_reader_type(request):
     if request.method == 'POST':
         reader_card_id = request.data['reader_card_id']
+        # print(reader_card_id)
         try:
             reader_student = ReaderStudent.objects.get(pk=reader_card_id)
             serializer = ReaderStudentSerializer(reader_student)
+            # print(serializer.data)
             re_data = {
                 "data": {
                     "type": "student",
@@ -1731,6 +1720,7 @@ def search_reader_type(request):
             try:
                 reader_faculty = ReaderFaculty.objects.get(pk=reader_card_id)
                 serializer = ReaderFacultySerializer(reader_faculty)
+                # print(serializer.data)
                 re_data = {
                     "data": {
                         "type": "faculty",

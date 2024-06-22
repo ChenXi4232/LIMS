@@ -336,6 +336,26 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/reader',
+    component: Layout,
+    // redirect: '/book/search-book',
+    // name: 'SearchBook',
+    meta: { roles: ['Librarian', 'LibraryDirector', 'Reader', 'admin'] },
+    children: [
+      {
+        path: 'index',
+        name: 'Reader',
+        component: () => import('@/views/reader/reader.vue'),
+        meta: {
+          title: '读者个人信息',
+          icon: 'people',
+          roles: ['Librarian', 'LibraryDirector', 'Reader', 'admin']
+        }
+      }
+    ]
+  },
+
+  {
     path: 'external-link',
     component: Layout,
     children: [

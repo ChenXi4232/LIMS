@@ -1,0 +1,38 @@
+# Ignore Python bytecode files
+*.pyc
+
+# Ignore macOS metadata files
+.DS_Store
+
+# Ignore editor temporary files
+*~
+
+# Ignore virtual environment
+venv/
+
+# Ignore Django development settings
+*.log
+*.pot
+*.pyc
+__pycache__/
+
+# Ignore sensitive information such as secret keys
+*.env
+*.env.*
+*.sqlite3
+
+# Ignore local settings
+local_settings.py
+
+# Ignore static files directory (use collectstatic)
+static/
+
+# Ignore media files directory
+# media/
+
+# Ignore pipenv or pip freeze requirements
+Pipfile.lock
+requirements.txt
+
+# Ignore vue-element-admin
+vue-element-admin/
